@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "996749385345",
+    "project_id": "aurora-959c5",
+    "storage_bucket": "aurora-959c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996749385345:android:f239cfc178b0e3c8023780",
+        "android_client_info": {
+          "package_name": "com.example.aurora"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmuix1qJ1Gas4e4uziX3Q9NT4MBz2WUBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
