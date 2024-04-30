@@ -61,6 +61,7 @@ class Skodce : Fragment() {
         getSkodceData()
 
 
+
         binding.button2.setOnClickListener{
             val intent = Intent(activity , NewSkodecActivity::class.java)
             startActivity(intent)
@@ -76,33 +77,30 @@ class Skodce : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 if(snapshot.exists()){
+
                     for (poleSnapshot in snapshot.children){
                         val skodec = poleSnapshot.getValue(SkodecModel::class.java)
+
                         for (s in suradniceArrayList){
                             val locationA = Location("a")
-                            locationA.latitude = s.dlzka!!.toDouble()
-                            locationA.longitude = s.sirka!!.toDouble()
+                            locationA.latitude = s.sirka!!.toDouble()
+                            locationA.longitude = s.dlzka!!.toDouble()
                             val locationB = Location("b")
                             locationB.latitude = skodec?.sirka!!.toDouble()
                             locationB.longitude = skodec?.dlzka!!.toDouble()
+
                             //vypocitame vzdialenost bodov a ak je to vzdialene do 50km, tak zobrazime
-                            if (locationA.distanceTo(locationB) < 50000){
+                            if (locationA.distanceTo(locationB).toDouble() < 50000){
                                 if (skodceArrayList.contains(skodec) == false){
                                     skodceArrayList.add(skodec!!)
                                 }
-                                break
                             }
                         }
-                        //skodceArrayList.add(skodec!!)
-
                     }
-                    //zoradenie v opacnom poradi ako boli pridane, teda od najnovsieho
-                    //var sortedList = skodceArrayList.reversed()
-                    //skodceArrayList.sortByDescending {  }
 
                     //binding.mRecycler.adapter = SkodceAdapter(sortedList)
-
-                    mAdapter = SkodceAdapter(skodceArrayList)
+                    //zoradenie v opacnom poradi ako boli pridane, teda od najnovsieho
+                    mAdapter = SkodceAdapter(skodceArrayList.reversed())
                     binding.mRecycler.adapter = mAdapter
 
                     mAdapter.setOnItemClickListener(object : SkodceAdapter.onItemClickListener{
