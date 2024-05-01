@@ -92,7 +92,8 @@ class Polia : Fragment() {
             startActivity(intent2)
         }
         binding.buttonMapa.setOnClickListener {
-            Toast.makeText(context, "Mapa", Toast.LENGTH_SHORT).show()
+            val intent3 = Intent(activity, NewPoleActivity3::class.java)
+            startActivity(intent3)
         }
 
         return binding.root

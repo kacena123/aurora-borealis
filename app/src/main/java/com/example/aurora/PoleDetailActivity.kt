@@ -58,6 +58,7 @@ class PoleDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
+        mGoogleMap?.uiSettings?.isZoomControlsEnabled = true
         val lat = intent.getStringExtra("sirka")?.toDoubleOrNull() ?: 0.0
         val lon = intent.getStringExtra("dlzka")?.toDoubleOrNull() ?: 0.0
         val location = LatLng(lat, lon)
