@@ -6,11 +6,17 @@ import android.widget.Toast
 import com.example.aurora.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import android.content.Intent
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var dbRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +43,10 @@ class SignUpActivity : AppCompatActivity() {
                         if(it.isSuccessful){
                             firebaseAuth.currentUser?.sendEmailVerification()?.addOnSuccessListener {
                                 Toast.makeText(this, "Registracia prebehla uspesne, prosim, overte svoj email", Toast.LENGTH_SHORT).show()
+                                val userId = firebaseAuth.currentUser?.uid.toString()
+                                val date = getCurrentDate()
+                                val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userId).child(date)
+                                userDailyLimitRef.setValue(0)
                             }
                                 ?.addOnFailureListener {
                                     Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
@@ -56,4 +66,10 @@ class SignUpActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date())
+    }
+
 }

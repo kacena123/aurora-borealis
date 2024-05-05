@@ -33,6 +33,9 @@ class Profil : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProfilBinding.inflate(inflater, container, false)
+
+        binding.meno.text = FirebaseAuth.getInstance().currentUser?.email
+
         binding.logoutbutton.setOnClickListener{
             FirebaseAuth.getInstance().signOut()
 

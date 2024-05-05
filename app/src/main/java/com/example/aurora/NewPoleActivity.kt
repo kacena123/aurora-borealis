@@ -67,8 +67,6 @@ class NewPoleActivity : AppCompatActivity() {
         val empID = dbRef.push().key!!
         val pole = PoleModel(empID, userid, nazovPola, plodina, dlzka, sirka, rozloha)
 
-
-        //getPlace(sirka, dlzka)
         dbRef.child(empID).setValue(pole)
             .addOnCompleteListener{
                 Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
@@ -87,37 +85,5 @@ class NewPoleActivity : AppCompatActivity() {
 
     }
 
-    public fun getPlace(lat:String, lon:String){
 
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(url)
-            .build()
-            .create(ApiInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData(lat, lon, 1, key)
-        retrofitData.enqueue(object : Callback<List<LocationItem>?> {
-            override fun onResponse(
-                call: Call<List<LocationItem>?>,
-                response: Response<List<LocationItem>?>
-            ) {
-                val responseBody = response.body()!!
-
-                val myString = StringBuilder()
-                for (myData in responseBody){
-                    myString.append(myData.name)
-                    myString.append("\n")
-                }
-
-
-                //val res = responseBody[0].name
-                Log.d("NewPoleActivity", "Lokacia: $myString")
-                //Toast.makeText(this@NewPoleActivity, "Lokacia: $myString", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onFailure(call: Call<List<LocationItem>?>, t: Throwable) {
-                Log.d("NewPoleActivity", "cele zle ")
-            }
-        })
-    }
 }
