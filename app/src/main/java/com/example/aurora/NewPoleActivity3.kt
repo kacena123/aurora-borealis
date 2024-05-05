@@ -24,15 +24,24 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class NewPoleActivity3 : AppCompatActivity(), OnMapReadyCallback {
+
+    private val MAX_FIELDS_PER_DAY = 20
+
     private lateinit var binding: ActivityNewPole3Binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
@@ -76,8 +85,7 @@ class NewPoleActivity3 : AppCompatActivity(), OnMapReadyCallback {
         mGoogleMap?.setOnMapClickListener { latLng ->
             lat = latLng.latitude.toString()
             lon = latLng.longitude.toString()
-            Toast.makeText(this, "Clicked location: Lat = $lat, Lon = $lon", Toast.LENGTH_LONG).show()
-
+            //Toast.makeText(this, "Clicked location: Lat = $lat, Lon = $lon", Toast.LENGTH_LONG).show()
             // Remove the last marker from the map
             marker?.remove()
 
@@ -138,7 +146,27 @@ class NewPoleActivity3 : AppCompatActivity(), OnMapReadyCallback {
         val pole = PoleModel(empID, userid, nazovPola, plodina, lat, lon, rozloha)
 
 
-        //getPlace(sirka, dlzka)
+        val date = getCurrentDate()
+        val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
+
+        userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val count = dataSnapshot.getValue(Int::class.java) ?: 0
+                if (count >= MAX_FIELDS_PER_DAY) {
+                    Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                } else {
+                    userDailyLimitRef.setValue(count + 1)
+                    saveFieldToDatabase(empID, pole)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+            }
+        })
+    }
+
+    private fun saveFieldToDatabase(empID: String, pole: PoleModel) {
         dbRef.child(empID).setValue(pole)
             .addOnCompleteListener{
                 Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
@@ -152,7 +180,11 @@ class NewPoleActivity3 : AppCompatActivity(), OnMapReadyCallback {
             }.addOnFailureListener { err ->
                 Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()
             }
+    }
 
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date())
     }
 
 }

@@ -35,9 +35,17 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationSettingsRequest
 //import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class NewPoleActivity2 : AppCompatActivity() {
+
+    private val MAX_FIELDS_PER_DAY = 20
 
     private lateinit var binding: ActivityNewPole2Binding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -146,8 +154,27 @@ class NewPoleActivity2 : AppCompatActivity() {
         val empID = dbRef.push().key!!
         val pole = PoleModel(empID, userid, nazovPola, plodina, lat, log, rozloha)
 
+        val date = getCurrentDate()
+        val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
 
-        //getPlace(sirka, dlzka)
+        userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val count = dataSnapshot.getValue(Int::class.java) ?: 0
+                if (count >= MAX_FIELDS_PER_DAY) {
+                    Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                } else {
+                    userDailyLimitRef.setValue(count + 1)
+                    saveFieldToDatabase(empID, pole)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+            }
+        })
+    }
+
+    private fun saveFieldToDatabase(empID: String, pole: PoleModel) {
         dbRef.child(empID).setValue(pole)
             .addOnCompleteListener{
                 Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
@@ -161,40 +188,10 @@ class NewPoleActivity2 : AppCompatActivity() {
             }.addOnFailureListener { err ->
                 Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()
             }
-
     }
 
-    public fun getPlace(lat:String, lon:String){
-
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(url)
-            .build()
-            .create(ApiInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData(lat, lon, 1, key)
-        retrofitData.enqueue(object : Callback<List<LocationItem>?> {
-            override fun onResponse(
-                call: Call<List<LocationItem>?>,
-                response: Response<List<LocationItem>?>
-            ) {
-                val responseBody = response.body()!!
-
-                val myString = StringBuilder()
-                for (myData in responseBody){
-                    myString.append(myData.name)
-                    myString.append("\n")
-                }
-
-
-                //val res = responseBody[0].name
-                Log.d("NewPoleActivity2", "Lokacia: $myString")
-                //Toast.makeText(this@NewPoleActivity, "Lokacia: $myString", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onFailure(call: Call<List<LocationItem>?>, t: Throwable) {
-                Log.d("NewPoleActivity", "cele zle ")
-            }
-        })
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date())
     }
 }
