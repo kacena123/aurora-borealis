@@ -4,6 +4,7 @@ import org.threeten.bp.LocalDateTime
 import java.util.Date
 
 data class SkodecModel(
+    var id: String? = null,
     var userID: String? = null,
     var userName: String? = null,
     var nazovSkodca: String? = null,

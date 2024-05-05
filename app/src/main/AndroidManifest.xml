@@ -29,9 +29,6 @@
             android:name=".SkodecDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".Skodce"
-            android:exported="false" />
-        <activity
             android:name=".NewPoleActivity2"
             android:exported="false" />
         <activity

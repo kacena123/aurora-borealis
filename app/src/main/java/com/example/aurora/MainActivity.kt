@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             replaceFragment(Polia())
         }
+        if (intent.getStringExtra("fragment") == "Skodce") {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, Skodce())
+            transaction.commit()
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){

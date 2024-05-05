@@ -1,5 +1,7 @@
 package com.example.aurora
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.example.aurora.Adapters.PredpovedAdapter
@@ -16,6 +19,10 @@ import com.example.aurora.PredpovedWidgets.DlhodobaFragment
 //import com.example.aurora.PredpovedWidgets.HistoriaFragment
 import com.example.aurora.PredpovedWidgets.HodinuPoHodineFragment
 import com.example.aurora.databinding.FragmentPredpovedBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -31,9 +38,10 @@ class Predpoved : Fragment() {
     private lateinit var poleArrayList : ArrayList<PoleModel>
     private lateinit var poleLokalit : ArrayList<String>
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private var lat: String = "49.087501"
-    private var lon: String = "19.656123"
+    private var lat: String = "48.148598"
+    private var lon: String = "17.107748"
 
     private var _binding: FragmentPredpovedBinding? = null
     private val binding get() = _binding!!
@@ -44,12 +52,8 @@ class Predpoved : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentPredpovedBinding.inflate(inflater, container, false)
 
-
         var viewPager = binding.AktualneFragment as ViewPager
         var tablayout = binding.tabLayout as TabLayout
-
-        //val fragmentManager = (activity).supportFragmentManager
-
 
         val fragmentAdapter = PredpovedAdapter(requireActivity().supportFragmentManager)
         val aktfragment = AktualneFragment()
@@ -92,22 +96,12 @@ class Predpoved : Fragment() {
         //dropdown menu
         poleArrayList = arrayListOf<PoleModel>()
         poleLokalit = arrayListOf<String>()
-        //val aktfragment: AktualneFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.AktualneFragment) as AktualneFragment
+
         getPoleData(aktfragment, hphfragment, dlhFragment)
-
-
-        /*
-        binding.autoCompleteTextView.setOnItemClickListener{ parent, view, position, id ->
-            val selected = parent.getItemAtPosition(position) as PoleModel
-            Toast.makeText(activity, selected.nazovPola, Toast.LENGTH_LONG).show()
-
-        }*/
-        //android.app.Fragment tt = getFragmentManager().findFragmentById(R.id.AktualneFragment)
-        //val fragment: AktualneFragment = supportFragmentManager.findFragmentById(R.id.AktualneFragment) as AktualneFragment
+        //binding.autoCompleteTextView.setSelection(0)
 
         return binding.root
     }
-
 
     private fun getPoleData(aktualneFragment: AktualneFragment, hodinuPoHodineFragment: HodinuPoHodineFragment, dlhodobaFragment: DlhodobaFragment) {
 
@@ -131,6 +125,21 @@ class Predpoved : Fragment() {
 
                     val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, poleLokalit.toArray())
                     binding.autoCompleteTextView.setAdapter(arrayAdapter)
+                    binding.autoCompleteTextView.setSelection(0) // Select the first item in the dropdown menu
+
+                    // Set the text of autoCompleteTextView to the name of the first Pole
+                    val firstPoleName = poleLokalit[0]
+                    binding.autoCompleteTextView.setText(firstPoleName, false)
+
+                    // Fetch the weather data for the first Pole in the dropdown menu
+                    val firstPole = poleArrayList[0]
+                    lat = firstPole.sirka.toString()
+                    lon = firstPole.dlzka.toString()
+
+                    aktualneFragment.getPocasie(lat, lon)
+                    hodinuPoHodineFragment.getPocasiee(lat, lon)
+                    dlhodobaFragment.getPocasieee(lat, lon)
+
                     binding.autoCompleteTextView.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
                         val pole = poleArrayList[position]
                         if (pole != null) {
@@ -138,22 +147,16 @@ class Predpoved : Fragment() {
                             lat = pole.sirka.toString()
                             lon = pole.dlzka.toString()
 
-                            aktualneFragment.getPocasie(pole.sirka?.toString() ?: "", pole.dlzka?.toString() ?: "")
-                            hodinuPoHodineFragment.getPocasiee(pole.sirka?.toString() ?: "", pole.dlzka?.toString() ?: "")
-                            dlhodobaFragment.getPocasieee(pole.sirka?.toString() ?: "", pole.dlzka?.toString() ?: "")
+                            aktualneFragment.getPocasie(lat, lon)
+                            hodinuPoHodineFragment.getPocasiee(lat, lon)
+                            dlhodobaFragment.getPocasieee(lat, lon)
                         }
                     })
-
-
                 }
-
             }
-
-
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
 
+            }
         })
     }
 

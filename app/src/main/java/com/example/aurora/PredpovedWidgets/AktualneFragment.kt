@@ -1,11 +1,14 @@
 package com.example.aurora.PredpovedWidgets
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +18,8 @@ import com.example.aurora.Models.HourlyForecast4.AktualnePocasieModel
 import com.example.aurora.Models.HourlyForecast4.HourlyForecast4
 import com.example.aurora.databinding.FragmentAktualneBinding
 import com.example.aurora.databinding.FragmentPredpovedBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -38,6 +43,12 @@ class AktualneFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var url : String
     private lateinit var key : String
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var lat: String = ""
+    private var lon: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,9 +61,34 @@ class AktualneFragment : Fragment() {
         url = "https://pro.openweathermap.org/"
         key = "2eb612e9a337f4bc55645c1eae5689ab"
 
-        getPocasie("49.087501", "19.656123")
+
+        getPocasie("48.148598", "17.107748")
 
         return binding.root
+    }
+
+    private fun getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                lat = location.latitude.toString()
+                lon = location.longitude.toString()
+            }
+        }
     }
 
     public fun getPocasie(lat:String, lon:String){

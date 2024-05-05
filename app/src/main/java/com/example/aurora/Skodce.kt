@@ -73,8 +73,13 @@ class Skodce : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         dbref = FirebaseDatabase.getInstance().getReference("Skodce")
+
+
+
         dbref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // Clear the skodceArrayList before adding new SkodecModel objects
+                skodceArrayList.clear()
 
                 if(snapshot.exists()){
 
@@ -105,13 +110,15 @@ class Skodce : Fragment() {
 
                     mAdapter.setOnItemClickListener(object : SkodceAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            Log.d("poziciaaaa", "Item clicked: $position")
+                            val position2 = skodceArrayList.size - 1 - position
+                            Log.d("poziciaaaa", "Item clicked: $position  $position2")
                             val intent = Intent(activity, SkodecDetailActivity::class.java)
-                            intent.putExtra("nazovSkodca", skodceArrayList[position].nazovSkodca)
-                            intent.putExtra("dlzka", skodceArrayList[position].dlzka)
-                            intent.putExtra("sirka", skodceArrayList[position].sirka)
-                            intent.putExtra("lokalita", skodceArrayList[position].lokalita)
-                            intent.putExtra("popis", skodceArrayList[position].popis)
+                            intent.putExtra("id", skodceArrayList[position2].id)
+                            intent.putExtra("nazovSkodca", skodceArrayList[position2].nazovSkodca)
+                            intent.putExtra("dlzka", skodceArrayList[position2].dlzka)
+                            intent.putExtra("sirka", skodceArrayList[position2].sirka)
+                            intent.putExtra("lokalita", skodceArrayList[position2].lokalita)
+                            intent.putExtra("popis", skodceArrayList[position2].popis)
 
                             startActivity(intent)
                         }

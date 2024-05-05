@@ -152,17 +152,17 @@ class NewSkodecActivity : AppCompatActivity() {
 
         Log.d("NewSkodecActivity", "sirka: $sirka, lokalita: ${lok.toString()}")
 
-        //val daytime = LocalDateTime.now()
-        //lokalita?.get(0)?.subAdminArea.toString()
-
-        val skodec = SkodecModel(userid, userName, nazovSkodca, sirka, dlzka, lok.toString(), popis)
+        val skodec = SkodecModel(empID, userid, userName, nazovSkodca, sirka, dlzka, lok.toString(), popis)
 
         dbref.child(empID).setValue(skodec)
             .addOnCompleteListener{
                 Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
-                val intent = Intent(this , Skodce::class.java)
+                //val intent = Intent(this , Skodce::class.java)
+                //startActivity(intent)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("fragment", "Skodce")
                 startActivity(intent)
-
+                finish()
 
             }.addOnFailureListener { err ->
                 Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()

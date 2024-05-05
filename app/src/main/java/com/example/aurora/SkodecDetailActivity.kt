@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.aurora.Models.PoleModel
+import com.example.aurora.Models.SkodecModel
 import com.example.aurora.databinding.ActivityMainBinding
 import com.example.aurora.databinding.ActivityPoleDetailBinding
 import com.example.aurora.databinding.ActivitySkodecDetailBinding
@@ -39,10 +40,10 @@ class SkodecDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         setValues()
 
         binding.bupravit.setOnClickListener{
-            //openUpdateDialog(
-            //    intent.getStringExtra("id").toString(),
-            //    intent.getStringExtra("nazovPola").toString()
-            //)
+            openUpdateDialog(
+                intent.getStringExtra("id").toString(),
+                intent.getStringExtra("nazovSkodca").toString()
+            )
         }
 
         binding.bzmazat.setOnClickListener {
@@ -82,63 +83,55 @@ class SkodecDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.popis.text = intent.getStringExtra("popis")
     }
 
-    /*
-    private fun openUpdateDialog(id:String, nazovPola:String){
+
+    private fun openUpdateDialog(id:String, nazovSkodca:String){
         val mDialog = AlertDialog.Builder(this)
         val inflater = layoutInflater
-        val mDialogView = inflater.inflate(R.layout.update_dialog, null)
+        val mDialogView = inflater.inflate(R.layout.update_dialog_skodec, null)
         mDialog.setView(mDialogView)
 
-        val etNazovPola = mDialogView.findViewById<EditText>(R.id.etNazovPola)
-        val etPlodina = mDialogView.findViewById<EditText>(R.id.etPlodina)
-        val etSirka = mDialogView.findViewById<EditText>(R.id.etSirka)
-        val etDlzka = mDialogView.findViewById<EditText>(R.id.etDlzka)
-        val etRozloha = mDialogView.findViewById<EditText>(R.id.etRozloha)
+        val etNazovSkodca = mDialogView.findViewById<EditText>(R.id.etNazovSkodca)
+        val etPopis = mDialogView.findViewById<EditText>(R.id.etPopis)
+
         val button = mDialogView.findViewById<Button>(R.id.btnUpdateData)
 
-        etNazovPola.setText(intent.getStringExtra("nazovPola"))
-        etPlodina.setText(intent.getStringExtra("plodina"))
-        etSirka.setText(intent.getStringExtra("sirka"))
-        etDlzka.setText(intent.getStringExtra("dlzka"))
-        etRozloha.setText(intent.getStringExtra("rozloha"))
+        etNazovSkodca.setText(intent.getStringExtra("nazovSkodca"))
+        etPopis.setText(intent.getStringExtra("popis"))
 
-        mDialog.setTitle("Aktualizacia informacii pola: $nazovPola")
+        mDialog.setTitle("Aktualizacia informacii skodca: $nazovSkodca")
         val alertDialog = mDialog.create()
         alertDialog.show()
 
         button.setOnClickListener {
             updateData(
                 id,
-                etNazovPola.text.toString(),
-                etPlodina.text.toString(),
-                etSirka.text.toString(),
-                etDlzka.text.toString(),
-                etRozloha.text.toString()
+                etNazovSkodca.text.toString(),
+                etPopis.text.toString()
             )
             Toast.makeText(applicationContext, "Data boli aktualizovane", Toast.LENGTH_LONG).show()
-            binding.nazovPola.text = etNazovPola.text.toString()
-            binding.plodina.text = etPlodina.text.toString()
-            binding.dlzka.text = etDlzka.text.toString()
-            binding.sirka.text = etSirka.text.toString()
-            binding.rozloha.text = etRozloha.text.toString() + " ha"
+            binding.nazovSkodca.text = etNazovSkodca.text.toString()
+            binding.popis.text = etPopis.text.toString()
 
             alertDialog.dismiss()
         }
     }
-    */
+
 
     private fun updateData(
         id:String,
-        nazovPola: String,
-        plodina:String,
-        sirka:String,
-        dlzka:String,
-        rozloha:String
+        nazovSkodca: String,
+        popis:String
     ){
 
+        val sirka = intent.getStringExtra("sirka")
+        val dlzka = intent.getStringExtra("dlzka")
+        val lokalita = intent.getStringExtra("lokalita")
+
         val userid = firebaseAuth.currentUser?.uid.toString()
-        val referencia = FirebaseDatabase.getInstance().getReference("Polia").child(id)
-        val pole = PoleModel(id, userid, nazovPola, plodina, sirka, dlzka, rozloha)
-        referencia.setValue(pole)
+        val userName = firebaseAuth.currentUser?.email.toString()
+
+        val referencia = FirebaseDatabase.getInstance().getReference("Skodce").child(id)
+        val skodec = SkodecModel(id, userid, userName, nazovSkodca, sirka, dlzka, lokalita, popis)
+        referencia.setValue(skodec)
     }
 }

@@ -1,11 +1,14 @@
 package com.example.aurora.PredpovedWidgets
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aurora.Adapters.Predpoved2Adapter
 import com.example.aurora.Adapters.PredpovedDlhodobaAdapter
@@ -15,6 +18,8 @@ import com.example.aurora.Models.HourlyForecast4.HodinuPoHodineModel
 import com.example.aurora.Models.HourlyForecast4.HourlyForecast4
 import com.example.aurora.R
 import com.example.aurora.databinding.FragmentDlhodobaBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -37,6 +42,11 @@ class DlhodobaFragment : Fragment() {
 
     private lateinit var pocasieAdapter : PredpovedDlhodobaAdapter
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var lat: String = ""
+    private var lon: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,11 +61,38 @@ class DlhodobaFragment : Fragment() {
         url = "https://pro.openweathermap.org/"
         key = "2eb612e9a337f4bc55645c1eae5689ab"
 
-        getPocasieee("49.087501", "19.656123")
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        getCurrentLocation()
+
+        getPocasieee("48.148598", "17.107748")
 
         return binding.root
 
 
+    }
+
+    private fun getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                lat = location.latitude.toString()
+                lon = location.longitude.toString()
+            }
+        }
     }
 
     public fun getPocasieee(lat:String, lon:String){
