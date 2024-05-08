@@ -87,5 +87,5 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation("com.google.android.gms:play-services-maps:17.0.0")
-
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
 }
