@@ -86,7 +86,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Doplnujuce informacie"
-            android:textAlignment="gravity" />
+            android:textAlignment="gravity"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:gravity="top"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton

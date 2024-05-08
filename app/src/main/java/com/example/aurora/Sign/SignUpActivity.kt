@@ -43,10 +43,10 @@ class SignUpActivity : AppCompatActivity() {
                         if(it.isSuccessful){
                             firebaseAuth.currentUser?.sendEmailVerification()?.addOnSuccessListener {
                                 Toast.makeText(this, "Registracia prebehla uspesne, prosim, overte svoj email", Toast.LENGTH_SHORT).show()
-                                val userId = firebaseAuth.currentUser?.uid.toString()
-                                val date = getCurrentDate()
-                                val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userId).child(date)
-                                userDailyLimitRef.setValue(0)
+                                //val userId = firebaseAuth.currentUser?.uid.toString()
+                                //val date = getCurrentDate()
+                                //val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userId).child(date)
+                                //userDailyLimitRef.setValue(0)
                             }
                                 ?.addOnFailureListener {
                                     Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
@@ -65,11 +65,6 @@ class SignUpActivity : AppCompatActivity() {
             }
 
         }
-    }
-
-    private fun getCurrentDate(): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return sdf.format(Date())
     }
 
 }

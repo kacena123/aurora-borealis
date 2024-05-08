@@ -38,8 +38,14 @@ import android.content.Context
 import java.io.IOException
 import kotlin.time.measureTimedValue
 import android.view.View
+import com.google.android.gms.tasks.Task
+import com.google.firebase.database.ServerValue
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class NewSkodecActivity : AppCompatActivity() {
+
+    private val MAX_FIELDS_PER_DAY = 50
 
     private lateinit var binding: ActivityNewSkodecBinding
     private lateinit var dbRef: DatabaseReference
@@ -154,19 +160,30 @@ class NewSkodecActivity : AppCompatActivity() {
 
         val skodec = SkodecModel(empID, userid, userName, nazovSkodca, sirka, dlzka, lok.toString(), popis)
 
-        dbref.child(empID).setValue(skodec)
-            .addOnCompleteListener{
-                Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
-                //val intent = Intent(this , Skodce::class.java)
-                //startActivity(intent)
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("fragment", "Skodce")
-                startActivity(intent)
-                finish()
+        getCurrentDateFirebase().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val date = task.result
+                val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
 
-            }.addOnFailureListener { err ->
-                Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()
+                userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val count = dataSnapshot.getValue(Int::class.java) ?: 0
+                        if (count >= MAX_FIELDS_PER_DAY) {
+                            Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                        } else {
+                            userDailyLimitRef.setValue(count + 1)
+                            saveSkodecToDatabase(empID, skodec)
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle possible errors.
+                    }
+                })
+            } else {
+                // Handle possible errors.
             }
+        }
     }
 
 
@@ -220,6 +237,39 @@ class NewSkodecActivity : AppCompatActivity() {
         }
         return null
     }
+
+
+    private fun saveSkodecToDatabase(empID: String, skodec: SkodecModel) {
+        dbref.child(empID).setValue(skodec)
+            .addOnCompleteListener{
+                Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
+                //val intent = Intent(this , Skodce::class.java)
+                //startActivity(intent)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("fragment", "Skodce")
+                startActivity(intent)
+                finish()
+
+            }.addOnFailureListener { err ->
+                Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun getCurrentDateFirebase(): Task<String> {
+        val ref = FirebaseDatabase.getInstance().getReference("Timestamp")
+        return ref.setValue(ServerValue.TIMESTAMP)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    throw task.exception!!
+                }
+                ref.get()
+            }.continueWith { task ->
+                val timestamp = task.result?.value as Long
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                sdf.format(Date(timestamp))
+            }
+    }
+
     /*
     //TEST 2
     private fun Test2 (){

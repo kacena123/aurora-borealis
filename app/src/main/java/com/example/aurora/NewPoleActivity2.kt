@@ -35,8 +35,10 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationSettingsRequest
 //import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -45,7 +47,7 @@ import java.util.Locale
 
 class NewPoleActivity2 : AppCompatActivity() {
 
-    private val MAX_FIELDS_PER_DAY = 20
+    private val MAX_FIELDS_PER_DAY = 50
 
     private lateinit var binding: ActivityNewPole2Binding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -154,6 +156,7 @@ class NewPoleActivity2 : AppCompatActivity() {
         val empID = dbRef.push().key!!
         val pole = PoleModel(empID, userid, nazovPola, plodina, lat, log, rozloha)
 
+        /*
         val date = getCurrentDate()
         val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
 
@@ -172,6 +175,33 @@ class NewPoleActivity2 : AppCompatActivity() {
                 // Handle possible errors.
             }
         })
+
+         */
+
+        getCurrentDateFirebase().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val date = task.result
+                val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
+
+                userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val count = dataSnapshot.getValue(Int::class.java) ?: 0
+                        if (count >= MAX_FIELDS_PER_DAY) {
+                            Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                        } else {
+                            userDailyLimitRef.setValue(count + 1)
+                            saveFieldToDatabase(empID, pole)
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle possible errors.
+                    }
+                })
+            } else {
+                // Handle possible errors.
+            }
+        }
     }
 
     private fun saveFieldToDatabase(empID: String, pole: PoleModel) {
@@ -193,5 +223,20 @@ class NewPoleActivity2 : AppCompatActivity() {
     private fun getCurrentDate(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    private fun getCurrentDateFirebase(): Task<String> {
+        val ref = FirebaseDatabase.getInstance().getReference("Timestamp")
+        return ref.setValue(ServerValue.TIMESTAMP)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    throw task.exception!!
+                }
+                ref.get()
+            }.continueWith { task ->
+                val timestamp = task.result?.value as Long
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                sdf.format(Date(timestamp))
+            }
     }
 }
