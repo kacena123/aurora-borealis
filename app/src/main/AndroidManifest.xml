@@ -18,6 +18,9 @@
         android:theme="@style/Theme.AURORA"
         tools:targetApi="31">
         <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".NewPoleActivity3"
             android:exported="false" />
 
@@ -44,7 +47,7 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AURORA"></activity>
+            android:theme="@style/Theme.AURORA" />
         <activity
             android:name=".Polia"
             android:exported="false" />
