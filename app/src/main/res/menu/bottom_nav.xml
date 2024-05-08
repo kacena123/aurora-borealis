@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Fields"
+    <item android:title="Polia"
         android:id="@+id/polia"
         android:icon="@drawable/ic_dashboard"/>
-    <item android:title="Weather"
+    <item android:title="Počasie"
         android:id="@+id/predpoved"
         android:icon="@drawable/ic_sun"/>
-    <item android:title="Pests"
+    <item android:title="Škodce"
         android:id="@+id/skodce"
         android:icon="@drawable/ic_bug"/>
-    <item android:title="Profile"
+    <item android:title="Profil"
         android:id="@+id/profil"
         android:icon="@drawable/ic_user"/>
 </menu>

@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+
         poleArrayList = arrayListOf<PoleModel>()
         suradniceArrayList = arrayListOf<SuradniceModel>()
         poleDataList = arrayListOf<SuradniceModel>()
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                                     // Calculate the distance between the new skodec and the field
                                     if (locationA.distanceTo(locationB).toDouble() < 50000) {
                                         // The new skodec is within 50km of the field, create a notification
-                                        createNotificationSkodec("A new skodec has been added within 50km of your fields.")
+                                        createNotificationSkodec("Bol pridaný nový skodec vo vzdialenosti 50 km od vašich polí.", newSkodec?.nazovSkodca.toString())
                                         break
                                     }
                                 }
@@ -169,7 +171,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun createNotificationSkodec(message: String) {
+    private fun createNotificationSkodec(message: String, skodecName: String) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationChannelId = "skodec_channel"
 
@@ -180,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
         val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("New Skodec Added")
+            .setContentTitle("Nový škodec: $skodecName")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
