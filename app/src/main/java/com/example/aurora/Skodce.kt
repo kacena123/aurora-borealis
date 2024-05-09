@@ -17,13 +17,17 @@ import android.view.ViewGroup
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.example.aurora.Adapters.PoleAdapter
+import com.example.aurora.Adapters.PredpovedAdapter
 import com.example.aurora.Adapters.SkodceAdapter
+import com.example.aurora.Adapters.SkodceTabLayoutAdapter
 import com.example.aurora.Models.PoleModel
 import com.example.aurora.Models.SkodecModel
 import com.example.aurora.Models.SuradniceModel
 import com.example.aurora.databinding.FragmentPoliaBinding
 import com.example.aurora.databinding.FragmentSkodceBinding
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -54,120 +58,19 @@ class Skodce : Fragment() {
     ): View? {
         _binding = FragmentSkodceBinding.inflate(inflater, container, false)
 
-        binding.mRecycler.layoutManager = LinearLayoutManager(activity)
-        binding.mRecycler.setHasFixedSize(true)
+        var viewPager = binding.AktualneFragment as ViewPager
+        var tablayout = binding.tabLayout as TabLayout
 
-        skodceArrayList = arrayListOf<SkodecModel>()
-        poleArrayList = arrayListOf<PoleModel>()
-        suradniceArrayList = arrayListOf<SuradniceModel>()
-        poleDataList = arrayListOf<SuradniceModel>()
-        //sortedList = arrayListOf<SkodecModel>()
-        getPoleData()
-        getSkodceData()
+        val fragmentAdapter = SkodceTabLayoutAdapter(requireActivity().supportFragmentManager)
+        val mojeSkodceFragment = MojeSkodceFragment()
+        val okoliteSkodceFragment = OkoliteSkodceFragment()
+        fragmentAdapter.addFragment(okoliteSkodceFragment, "Okolite skodce")
+        fragmentAdapter.addFragment(mojeSkodceFragment, "Moje skodce")
 
+        viewPager.adapter = fragmentAdapter
+        tablayout.setupWithViewPager(viewPager)
 
-
-        binding.button2.setOnClickListener{
-            val intent = Intent(activity , NewSkodecActivity::class.java)
-            startActivity(intent)
-        }
         return binding.root
-    }
-
-    private fun getSkodceData() {
-
-        firebaseAuth = FirebaseAuth.getInstance()
-        dbref = FirebaseDatabase.getInstance().getReference("Skodce")
-
-
-
-        dbref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Clear the skodceArrayList before adding new SkodecModel objects
-                skodceArrayList.clear()
-
-                if(snapshot.exists()){
-
-                    for (poleSnapshot in snapshot.children){
-                        val skodec = poleSnapshot.getValue(SkodecModel::class.java)
-
-                        for (s in suradniceArrayList){
-                            val locationA = Location("a")
-                            locationA.latitude = s.sirka!!.toDouble()
-                            locationA.longitude = s.dlzka!!.toDouble()
-                            val locationB = Location("b")
-                            locationB.latitude = skodec?.sirka!!.toDouble()
-                            locationB.longitude = skodec?.dlzka!!.toDouble()
-
-                            //vypocitame vzdialenost bodov a ak je to vzdialene do 50km, tak zobrazime
-                            if (locationA.distanceTo(locationB).toDouble() < 50000){
-                                if (skodceArrayList.contains(skodec) == false){
-                                    skodceArrayList.add(skodec!!)
-                                }
-                            }
-                        }
-                    }
-
-                    //binding.mRecycler.adapter = SkodceAdapter(sortedList)
-                    //zoradenie v opacnom poradi ako boli pridane, teda od najnovsieho
-                    mAdapter = SkodceAdapter(skodceArrayList.reversed())
-                    binding.mRecycler.adapter = mAdapter
-
-                    mAdapter.setOnItemClickListener(object : SkodceAdapter.onItemClickListener{
-                        override fun onItemClick(position: Int) {
-                            val position2 = skodceArrayList.size - 1 - position
-                            Log.d("poziciaaaa", "Item clicked: $position  $position2")
-                            val intent = Intent(activity, SkodecDetailActivity::class.java)
-                            intent.putExtra("id", skodceArrayList[position2].id)
-                            intent.putExtra("nazovSkodca", skodceArrayList[position2].nazovSkodca)
-                            intent.putExtra("dlzka", skodceArrayList[position2].dlzka)
-                            intent.putExtra("sirka", skodceArrayList[position2].sirka)
-                            intent.putExtra("lokalita", skodceArrayList[position2].lokalita)
-                            intent.putExtra("popis", skodceArrayList[position2].popis)
-
-                            startActivity(intent)
-                        }
-                    })
-                }
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-    private fun getPoleData() {
-
-        firebaseAuth = FirebaseAuth.getInstance()
-        dbRef = FirebaseDatabase.getInstance().getReference("Polia")
-
-        dbRef.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for (poleSnapshot in snapshot.children){
-                        val pole = poleSnapshot.getValue(PoleModel::class.java)
-                        if (pole?.userID == firebaseAuth.currentUser?.uid.toString()){
-                            poleArrayList.add(pole!!)
-                            val sirka = pole.sirka
-                            val dlzka = pole.dlzka
-                            val suradnice = SuradniceModel(sirka, dlzka)
-                            suradniceArrayList.add(suradnice)
-
-                        }
-                    }
-                }
-                poleDataList = suradniceArrayList
-                getSkodceData()
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
     }
 
 }

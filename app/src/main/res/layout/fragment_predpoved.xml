@@ -38,9 +38,6 @@
         app:tabTextColor="@color/violet"
         app:tabIndicatorColor="@color/eggplant"
         app:tabTextAppearance="@style/TabLayoutTextStyle">
-
-
-
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
