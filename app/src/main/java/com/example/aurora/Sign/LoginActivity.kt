@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.aurora.MainActivity
+import com.example.aurora.ZabudnuteHesloActivity
 import com.example.aurora.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -21,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        binding.textView.setOnClickListener{
+        binding.buttonRegistracia.setOnClickListener{
             val intent = Intent(this , SignUpActivity::class.java)
             startActivity(intent)
         }
@@ -44,6 +45,12 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        //zabudnute heslo
+        binding.zabudnuteHeslo.setOnClickListener {
+            val intent = Intent(this, ZabudnuteHesloActivity::class.java)
+            startActivity(intent)
         }
     }
 

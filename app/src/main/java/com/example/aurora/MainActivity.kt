@@ -51,7 +51,9 @@ class MainActivity : AppCompatActivity() {
         if (fragmentName != null) {
             when (fragmentName) {
                 "Skodce" -> replaceFragment(Skodce())
-                // Add other fragments here
+                "Predpoved" -> replaceFragment(Predpoved())
+                "Profil" -> replaceFragment(Profil())
+                else -> replaceFragment(Polia())
             }
         } else {
             replaceFragment(Polia())
@@ -60,6 +62,18 @@ class MainActivity : AppCompatActivity() {
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, Skodce())
             binding.bottomNavigationView.setSelectedItemId(R.id.skodce)
+            transaction.commit()
+        }
+        if (intent.getStringExtra("fragment") == "Predpoved") {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, Predpoved())
+            binding.bottomNavigationView.setSelectedItemId(R.id.predpoved)
+            transaction.commit()
+        }
+        if (intent.getStringExtra("fragment") == "Profil") {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, Profil())
+            binding.bottomNavigationView.setSelectedItemId(R.id.profil)
             transaction.commit()
         }
 

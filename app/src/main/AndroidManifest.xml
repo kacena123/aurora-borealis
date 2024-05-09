@@ -18,6 +18,9 @@
         android:theme="@style/Theme.AURORA"
         tools:targetApi="31">
         <activity
+            android:name=".ZabudnuteHesloActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
         <activity

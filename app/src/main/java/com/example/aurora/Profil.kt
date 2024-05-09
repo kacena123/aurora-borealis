@@ -44,6 +44,12 @@ class Profil : Fragment() {
 
             Toast.makeText(activity, "Úspešné odhlásenie", Toast.LENGTH_LONG).show()
         }
+
+        binding.zmenitheslobutton.setOnClickListener {
+            val intent = Intent(activity, ChangePasswordActivity::class.java)
+            startActivity(intent)
+        }
+
         return binding.root
     }
 

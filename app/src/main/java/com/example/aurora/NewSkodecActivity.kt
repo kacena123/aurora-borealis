@@ -243,8 +243,7 @@ class NewSkodecActivity : AppCompatActivity() {
         dbref.child(empID).setValue(skodec)
             .addOnCompleteListener{
                 Toast.makeText(this, "Data boli vlozene", Toast.LENGTH_LONG).show()
-                //val intent = Intent(this , Skodce::class.java)
-                //startActivity(intent)
+
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("fragment", "Skodce")
                 startActivity(intent)
