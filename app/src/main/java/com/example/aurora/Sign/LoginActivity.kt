@@ -35,8 +35,21 @@ class LoginActivity : AppCompatActivity() {
 
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
+                        if (firebaseAuth.currentUser?.isEmailVerified == true) {
+                            binding.overenieEmailu.visibility = android.view.View.INVISIBLE
+                            binding.zaslatOverovaciEmail.visibility = android.view.View.INVISIBLE
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, "Najprv overte svoju emailovu adresu.", Toast.LENGTH_SHORT).show()
+                            binding.overenieEmailu.visibility = android.view.View.VISIBLE
+                            binding.zaslatOverovaciEmail.visibility = android.view.View.VISIBLE
+                            binding.zaslatOverovaciEmail.setOnClickListener {
+                                firebaseAuth.currentUser?.sendEmailVerification()?.addOnSuccessListener {
+                                    Toast.makeText(this, "Email bol odoslaný na vašu emailovú adresu.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
 
