@@ -97,10 +97,6 @@ class OkoliteSkodceFragment : Fragment() {
                         }
                     }
 
-
-
-                    //binding.mRecycler.adapter = SkodceAdapter(sortedList)
-                    //zoradenie v opacnom poradi ako boli pridane, teda od najnovsieho
                     mAdapter = SkodceAdapter(skodceArrayList.reversed())
                     binding.mRecycler.adapter = mAdapter
 
@@ -120,11 +116,9 @@ class OkoliteSkodceFragment : Fragment() {
                         }
                     })
                 }
-
             }
-
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                // Handle the error
             }
 
         })

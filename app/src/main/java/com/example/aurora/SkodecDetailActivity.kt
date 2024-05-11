@@ -46,12 +46,6 @@ class SkodecDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-        binding.bzmazat.setOnClickListener {
-            deleteRecord(
-                intent.getStringExtra("id").toString()
-            )
-        }
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -63,19 +57,6 @@ class SkodecDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val zoomLevel = 10.0f
         mGoogleMap?.addMarker(MarkerOptions().position(location).title("Skodec na mape"))
         mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel))
-    }
-
-    private fun deleteRecord(id:String){
-        val ref = FirebaseDatabase.getInstance().getReference("Polia").child(id)
-        val mTask = ref.removeValue()
-        mTask.addOnSuccessListener {
-            Toast.makeText(this, "Pole bolo zmazane", Toast.LENGTH_LONG).show()
-            val intent = Intent(this, MainActivity::class.java)
-            finish()
-            startActivity(intent)
-        }.addOnFailureListener { error ->
-            Toast.makeText(this, "Deleting error ${error}", Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun setValues(){
