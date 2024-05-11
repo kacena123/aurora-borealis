@@ -50,6 +50,11 @@ class Profil : Fragment() {
             startActivity(intent)
         }
 
+        binding.notifukaciebutton.setOnClickListener {
+            val intent = Intent(activity, NotifikacieActivity::class.java)
+            startActivity(intent)
+        }
+
         return binding.root
     }
 

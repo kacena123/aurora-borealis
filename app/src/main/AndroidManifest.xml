@@ -18,6 +18,12 @@
         android:theme="@style/Theme.AURORA"
         tools:targetApi="31">
         <activity
+            android:name=".NewNotifikaciaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotifikacieActivity"
+            android:exported="false" />
+        <activity
             android:name=".ZabudnuteHesloActivity"
             android:exported="false" />
         <activity

@@ -118,23 +118,6 @@ class NewSkodecActivity : AppCompatActivity() {
         val sirka = pole.sirka.toString()
 
 
-        /*
-        binding.autoCompleteTextView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val selectedPole = poleArrayList[position]
-                // Update the latitude and longitude values
-                dlzka = selectedPole.dlzka.toString()
-                sirka = selectedPole.sirka.toString()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Do nothing
-            }
-        }
-
-         */
-
-
         Log.d("NewSkodecActivity", "nazovPola: $nazovPola, sirka: $sirka, dlzka: $dlzka")
 
 
@@ -169,7 +152,7 @@ class NewSkodecActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val count = dataSnapshot.getValue(Int::class.java) ?: 0
                         if (count >= MAX_FIELDS_PER_DAY) {
-                            Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, "Dosiahli ste maximálny počet vložení do databázy za deň", Toast.LENGTH_LONG).show()
                         } else {
                             userDailyLimitRef.setValue(count + 1)
                             saveSkodecToDatabase(empID, skodec)
