@@ -103,7 +103,6 @@ class HodinuPoHodineFragment : Fragment() {
         val retrofitDataa = retrofitBuilderr.getHodinovaPredpoved(lat, lon, key)
         retrofitDataa.enqueue(object : Callback<HourlyForecast4> {
             override fun onResponse(call: Call<HourlyForecast4>, response: Response<HourlyForecast4>) {
-                Log.d("Dusanko2", "${response}")
 
                 val responseBody = response.body()!!
 

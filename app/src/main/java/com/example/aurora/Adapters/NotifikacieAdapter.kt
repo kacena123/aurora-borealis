@@ -16,6 +16,7 @@ class NotifikacieAdapter(private val NotifikacieList : List<NotifikacieModel>) :
     class NotifikacieViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val cas : TextView = itemView.findViewById(R.id.cas)
         val teplota : TextView = itemView.findViewById(R.id.teplota)
+        val notifikacie : TextView = itemView.findViewById(R.id.upozornenie)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotifikacieViewHolder {
@@ -32,6 +33,7 @@ class NotifikacieAdapter(private val NotifikacieList : List<NotifikacieModel>) :
         val currentitem = NotifikacieList[position]
 
         holder.cas.text = "Hodiny: " + currentitem.hodiny
-        holder.teplota.text = "Stupne: " + currentitem.teplota
+        holder.teplota.text = "Stupne: " + currentitem.teplota + "°C"
+        holder.notifikacie.text = "Notifikácia: " + currentitem.nazovPola
     }
 }
