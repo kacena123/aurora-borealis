@@ -218,6 +218,7 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 // List pre notifikácie
                 val notificationsList = mutableListOf<NotifikacieModel>()
+                notificationsList.clear()
 
                 // Načítanie všetkých notifikácií používateľa
                 val dbRef = FirebaseDatabase.getInstance().getReference("Notifikacie")

@@ -1,5 +1,6 @@
 package com.example.aurora
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.AdapterView
@@ -64,7 +65,8 @@ class NewNotifikaciaActivity : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             saveData()
-
+            val intent = Intent(this, NotifikacieActivity::class.java)
+            startActivity(intent)
         }
 
 
