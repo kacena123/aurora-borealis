@@ -8,6 +8,8 @@ import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
@@ -165,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
+        /*
         // List pre notifikácie
         val notificationsList = mutableListOf<NotifikacieModel>()
 
@@ -205,9 +207,59 @@ class MainActivity : AppCompatActivity() {
                 // Handle possible errors
                 Log.e("Firebase", "Error: ${databaseError.message}")
             }
-        })
+        })*/
 
+        //_____________NOTIFIKACIE NA POCASIE_____________
+        // Vytvorenie Handler
+        val handler = Handler(Looper.getMainLooper())
 
+        // Vytvorenie Runnable
+        val runnableCode = object : Runnable {
+            override fun run() {
+                // List pre notifikácie
+                val notificationsList = mutableListOf<NotifikacieModel>()
+
+                // Načítanie všetkých notifikácií používateľa
+                val dbRef = FirebaseDatabase.getInstance().getReference("Notifikacie")
+                dbRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Prejdite všetky notifikácie
+                            for (notificationSnapshot in dataSnapshot.children) {
+                                val notification = notificationSnapshot.getValue(NotifikacieModel::class.java)
+                                if (notification?.userID == firebaseAuth.currentUser?.uid.toString()) {
+                                    // Pridajte notifikáciu do listu
+                                    notificationsList.add(notification)
+
+                                    // Získajte hodnoty x a y
+                                    val x = notification?.hodiny!!.toInt()
+                                    val y = notification?.teplota
+
+                                    // Získanie predpovede teploty
+                                    getPocasie(notification.sirka.toString(), notification.dlzka.toString()) { pocasieList ->
+                                        val temp = pocasieList[x].teplota.toInt()
+                                        if (temp <= y!!.toInt()) {
+                                            createNotificationTeplota("Teplota klesne pod $y°C v nasledujúcich $x hodinách.", notification.nazovPola.toString(), y.toString())
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle possible errors
+                        Log.e("Firebase", "Error: ${databaseError.message}")
+                    }
+                })
+
+                // Naplánovanie Runnable na spustenie znova o hodinu
+                handler.postDelayed(this, 60 * 60 * 1000)
+            }
+        }
+
+        // Spustenie Runnable
+        handler.post(runnableCode)
 
     }
 
