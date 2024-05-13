@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.example.aurora.NewNotifikaciaActivity
+import com.example.aurora.NotifikaciaDetailActivity
 
 class NotifikacieActivity : AppCompatActivity() {
 
@@ -69,24 +71,19 @@ class NotifikacieActivity : AppCompatActivity() {
                     mAdapter = NotifikacieAdapter(notifikacieArrayList)
                     binding.mRecycler.adapter = mAdapter
 
-                    /*
-
-                    mAdapter.setOnItemClickListener(object : SkodceAdapter.onItemClickListener{
+                    mAdapter.setOnItemClickListener(object : NotifikacieAdapter.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            val position2 = skodceArrayList.size - 1 - position
-                            Log.d("poziciaaaa", "Item clicked: $position  $position2")
-                            val intent = Intent(activity, SkodecDetailActivity::class.java)
-                            intent.putExtra("id", skodceArrayList[position2].id)
-                            intent.putExtra("nazovSkodca", skodceArrayList[position2].nazovSkodca)
-                            intent.putExtra("dlzka", skodceArrayList[position2].dlzka)
-                            intent.putExtra("sirka", skodceArrayList[position2].sirka)
-                            intent.putExtra("lokalita", skodceArrayList[position2].lokalita)
-                            intent.putExtra("popis", skodceArrayList[position2].popis)
+                            val intent = Intent(this@NotifikacieActivity, NotifikaciaDetailActivity::class.java)
+                            intent.putExtra("id", notifikacieArrayList[position].id)
+                            intent.putExtra("pole", notifikacieArrayList[position].nazovPola)
+                            intent.putExtra("hodiny", notifikacieArrayList[position].hodiny)
+                            intent.putExtra("teplota", notifikacieArrayList[position].teplota)
+                            intent.putExtra("sirka", notifikacieArrayList[position].sirka)
+                            intent.putExtra("dlzka", notifikacieArrayList[position].dlzka)
 
                             startActivity(intent)
                         }
                     })
-                     */
                 }
 
             }

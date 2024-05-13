@@ -17,7 +17,6 @@
             android:orientation="horizontal"
             android:layout_margin="10dp"
             android:padding="10dp"
-
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@drawable/customborder">

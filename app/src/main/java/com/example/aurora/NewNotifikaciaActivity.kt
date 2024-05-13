@@ -87,8 +87,9 @@ class NewNotifikaciaActivity : AppCompatActivity() {
         val sirka = pole.sirka.toString()
 
         val userid = firebaseAuth.currentUser?.uid.toString()
+        val empID = dbRef.push().key!!
 
-        val notifikacia = NotifikacieModel(sirka, dlzka, nazovPola, hodiny.toString(), teplota.toString(), userid)
+        val notifikacia = NotifikacieModel(empID, sirka, dlzka, nazovPola, hodiny.toString(), teplota.toString(), userid)
 
         getCurrentDateFirebase().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -102,7 +103,7 @@ class NewNotifikaciaActivity : AppCompatActivity() {
                             Toast.makeText(applicationContext, "Dosiahli ste maximálny počet vložení do databázy za deň", Toast.LENGTH_LONG).show()
                         } else {
                             userDailyLimitRef.setValue(count + 1)
-                            saveNotifikaciaToDatabase(notifikacia)
+                            saveNotifikaciaToDatabase(empID, notifikacia)
                         }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -130,14 +131,19 @@ class NewNotifikaciaActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveNotifikaciaToDatabase(notifikacia: NotifikacieModel) {
+    private fun saveNotifikaciaToDatabase(empID: String, notifikacia: NotifikacieModel) {
         val dbRef = FirebaseDatabase.getInstance().getReference("Notifikacie")
-        val notifikaciaID = dbRef.push().key
-        dbRef.child(notifikaciaID!!).setValue(notifikacia).addOnSuccessListener {
-            Toast.makeText(applicationContext, "Notifikacia pridana", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
-            Toast.makeText(applicationContext, "Chyba", Toast.LENGTH_SHORT).show()
-        }
+        dbRef.child(empID).setValue(notifikacia)
+            .addOnCompleteListener{
+                Toast.makeText(applicationContext, "Notifikacia pridana", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, NotifikacieActivity::class.java)
+                startActivity(intent)
+                finish()
+
+            }.addOnFailureListener { err ->
+                Toast.makeText(applicationContext, "Chyba", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun getPoleData() {

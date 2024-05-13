@@ -1,6 +1,7 @@
 package com.example.aurora.Models
 
 data class NotifikacieModel(
+    var id: String? = null,
     var sirka: String? = null,
     var dlzka: String? = null,
     var nazovPola: String? = null,
