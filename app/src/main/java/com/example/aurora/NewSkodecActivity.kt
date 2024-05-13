@@ -216,7 +216,8 @@ class NewSkodecActivity : AppCompatActivity() {
         if (addresses != null && addresses.isNotEmpty()) {
             val address: Address = addresses[0]
             val addressLine = address.getAddressLine(0)
-            return addressLine
+            val city = address.locality
+            return city
         }
         return null
     }

@@ -59,9 +59,9 @@ class Predpoved : Fragment() {
         val aktfragment = AktualneFragment()
         val hphfragment = HodinuPoHodineFragment()
         val dlhFragment = DlhodobaFragment()
-        fragmentAdapter.addFragment(aktfragment,"Current", lat, lon)
-        fragmentAdapter.addFragment(hphfragment, "Hourly", lat, lon)
-        fragmentAdapter.addFragment(dlhFragment, "Long-term", lat, lon)
+        fragmentAdapter.addFragment(aktfragment,"Aktuálna", lat, lon)
+        fragmentAdapter.addFragment(hphfragment, "Hodinová", lat, lon)
+        fragmentAdapter.addFragment(dlhFragment, "Dlhodobá", lat, lon)
         //fragmentAdapter.addFragment(HistoriaFragment(), "História")
 
         viewPager.adapter = fragmentAdapter

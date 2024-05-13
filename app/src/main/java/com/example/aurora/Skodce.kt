@@ -64,8 +64,8 @@ class Skodce : Fragment() {
         val fragmentAdapter = SkodceTabLayoutAdapter(requireActivity().supportFragmentManager)
         val mojeSkodceFragment = MojeSkodceFragment()
         val okoliteSkodceFragment = OkoliteSkodceFragment()
-        fragmentAdapter.addFragment(okoliteSkodceFragment, "Okolite skodce")
-        fragmentAdapter.addFragment(mojeSkodceFragment, "Moje skodce")
+        fragmentAdapter.addFragment(okoliteSkodceFragment, "Okolité škodce")
+        fragmentAdapter.addFragment(mojeSkodceFragment, "Moje škodce")
 
         viewPager.adapter = fragmentAdapter
         tablayout.setupWithViewPager(viewPager)
