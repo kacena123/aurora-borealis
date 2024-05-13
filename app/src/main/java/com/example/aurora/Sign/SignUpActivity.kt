@@ -42,17 +42,15 @@ class SignUpActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email , pass).addOnCompleteListener {
                         if(it.isSuccessful){
                             firebaseAuth.currentUser?.sendEmailVerification()?.addOnSuccessListener {
+                                firebaseAuth.signOut()
                                 Toast.makeText(this, "Registracia prebehla uspesne, prosim, overte svoj email", Toast.LENGTH_SHORT).show()
-                                //val userId = firebaseAuth.currentUser?.uid.toString()
-                                //val date = getCurrentDate()
-                                //val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userId).child(date)
-                                //userDailyLimitRef.setValue(0)
+                                val intent = Intent(this, LoginActivity::class.java)
+                                startActivity(intent)
                             }
                                 ?.addOnFailureListener {
                                     Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
                                 }
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
+
                         }else {
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                         }
