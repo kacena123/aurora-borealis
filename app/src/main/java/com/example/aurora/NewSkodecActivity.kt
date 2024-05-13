@@ -216,8 +216,18 @@ class NewSkodecActivity : AppCompatActivity() {
         if (addresses != null && addresses.isNotEmpty()) {
             val address: Address = addresses[0]
             val addressLine = address.getAddressLine(0)
-            val city = address.locality
-            return city
+            //var cityName = address.subAdminArea
+            var cityName = address.subLocality
+            if (cityName == null){
+                cityName = address.locality
+                if (cityName == null){
+                    cityName = address.subAdminArea
+                    if (cityName == null){
+                        cityName = address.adminArea
+                    }
+                }
+            }
+            return cityName
         }
         return null
     }

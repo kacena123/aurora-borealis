@@ -137,10 +137,6 @@ class NewNotifikaciaActivity : AppCompatActivity() {
             .addOnCompleteListener{
                 Toast.makeText(applicationContext, "Notifikacia pridana", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this, NotifikacieActivity::class.java)
-                startActivity(intent)
-                finish()
-
             }.addOnFailureListener { err ->
                 Toast.makeText(applicationContext, "Chyba", Toast.LENGTH_SHORT).show()
             }

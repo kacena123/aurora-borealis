@@ -18,6 +18,9 @@
         android:theme="@style/Theme.AURORA"
         tools:targetApi="31">
         <activity
+            android:name=".SkodecDetailActivity2"
+            android:exported="false" />
+        <activity
             android:name=".NotifikaciaDetailActivity"
             android:exported="false" />
         <activity

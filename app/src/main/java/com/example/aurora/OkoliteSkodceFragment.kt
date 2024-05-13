@@ -104,7 +104,7 @@ class OkoliteSkodceFragment : Fragment() {
                         override fun onItemClick(position: Int) {
                             val position2 = skodceArrayList.size - 1 - position
                             Log.d("poziciaaaa", "Item clicked: $position  $position2")
-                            val intent = Intent(activity, SkodecDetailActivity::class.java)
+                            val intent = Intent(activity, SkodecDetailActivity2::class.java)
                             intent.putExtra("id", skodceArrayList[position2].id)
                             intent.putExtra("nazovSkodca", skodceArrayList[position2].nazovSkodca)
                             intent.putExtra("dlzka", skodceArrayList[position2].dlzka)

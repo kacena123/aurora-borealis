@@ -123,6 +123,18 @@ class Predpoved : Fragment() {
                         poleLokalit.add(i.nazovPola.toString())
                     }
 
+                    if (poleLokalit.isEmpty()) {
+                        //Toast.makeText(activity, "Nemáte žiadne poľa pridané", Toast.LENGTH_SHORT).show()
+                        // Create an instance of ZiadnePoliaFragment
+                        val ziadnePoliaFragment = ZiadnePoliaFragment()
+
+                        // Replace the current fragment with ZiadnePoliaFragment
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.frame_layout, ziadnePoliaFragment)
+                            .commit()
+                        return
+                    }
+
                     val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, poleLokalit.toArray())
                     binding.autoCompleteTextView.setAdapter(arrayAdapter)
                     binding.autoCompleteTextView.setSelection(0) // Select the first item in the dropdown menu

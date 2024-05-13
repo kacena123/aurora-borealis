@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.aurora.Models.NotifikacieModel
@@ -99,12 +100,17 @@ class NotifikaciaDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val mDialogView = inflater.inflate(R.layout.update_dialog_notifikacie, null)
         mDialog.setView(mDialogView)
 
-        val etPole = mDialogView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+        val etPole = mDialogView.findViewById<TextView>(R.id.textpole)
+        etPole.text = pole
+
+        //val etPole = mDialogView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
         val etHodiny = mDialogView.findViewById<NumberPicker>(R.id.pickerhodiny)
         val etTeplota = mDialogView.findViewById<NumberPicker>(R.id.pickerteptota)
 
-        poleArrayList = arrayListOf<PoleModel>()
-        poleLokalit = arrayListOf<String>()
+        //poleArrayList = arrayListOf<PoleModel>()
+        //poleLokalit = arrayListOf<String>()
+
+        /*
 
         dbRef = FirebaseDatabase.getInstance().getReference("Polia")
         dbRef.addValueEventListener(object : ValueEventListener {
@@ -131,11 +137,10 @@ class NotifikaciaDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
+        etPole.setText(intent.getStringExtra("pole"))
 
-        //getPoleData()
+         */
 
-        //val arrayAdapter = ArrayAdapter(applicationContext, R.layout.dropdown_item, poleLokalit.toArray())
-        //etPole.setAdapter(arrayAdapter)
 
         etHodiny.maxValue = 100
         etHodiny.minValue = 1
@@ -161,14 +166,14 @@ class NotifikaciaDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             val temp = etTeplota.value + tempMinValue
             updateData(
                 id,
-                etPole.text.toString(),
                 etHodiny.value.toString(),
                 temp.toString()
             )
             Toast.makeText(applicationContext, "Notifikacia bola aktualizovana", Toast.LENGTH_LONG).show()
-            binding.pole.text = etPole.text.toString()
+            //binding.pole.text = etPole.text.toString()
             binding.hodiny.text = etHodiny.value.toString()
             binding.teplota.text = temp.toString()
+
 
             alertDialog.dismiss()
         }
@@ -176,13 +181,13 @@ class NotifikaciaDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateData(
         id:String,
-        pole: String,
         hodiny: String,
         teplota: String
     ){
 
         val sirka = intent.getStringExtra("sirka")
         val dlzka = intent.getStringExtra("dlzka")
+        val pole = intent.getStringExtra("pole")
 
         val userid = firebaseAuth.currentUser?.uid.toString()
 
