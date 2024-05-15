@@ -90,24 +90,18 @@ class HodinuPoHodineFragment : Fragment() {
     }
 
     public fun getPocasiee(lat:String, lon:String){
-
         url = "https://pro.openweathermap.org/"
         key = "2eb612e9a337f4bc55645c1eae5689ab"
-
         val retrofitBuilderr = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(url)
             .build()
             .create(ApiInterface::class.java)
-
         val retrofitDataa = retrofitBuilderr.getHodinovaPredpoved(lat, lon, key)
         retrofitDataa.enqueue(object : Callback<HourlyForecast4> {
             override fun onResponse(call: Call<HourlyForecast4>, response: Response<HourlyForecast4>) {
-
                 val responseBody = response.body()!!
-
                 val pocasieList = ArrayList<HodinuPoHodineModel>()
-
                 for (data in responseBody.list){
                     val temp = (data.main.temp - 273.15).roundToInt()
                     val pop = (data.pop * 100).roundToInt()
@@ -116,7 +110,6 @@ class HodinuPoHodineFragment : Fragment() {
                     val zrazky = data.clouds.all.toString() + "%"
                     val pravdepodobnost = pop.toString() + "%"
                     val ikona = data.weather[0].icon
-
                     val item = HodinuPoHodineModel(cas, datum, temp.toString(), pravdepodobnost, zrazky, ikona)
                     pocasieList.add(item)
                 }
@@ -124,26 +117,18 @@ class HodinuPoHodineFragment : Fragment() {
                 val sdf = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm")
                 val date = java.util.Date(responseBody.list[0].dt.toLong() * 1000)
 
-
-
                 binding.hrecyclerView.layoutManager = LinearLayoutManager(activity)
                 binding.hrecyclerView.setHasFixedSize(true)
-                //binding.hrecyclerView.adapter = Predpoved2Adapter(pocasieList)
                 pocasieAdapter = Predpoved2Adapter(pocasieList)
                 binding.hrecyclerView.adapter = pocasieAdapter
 
-
-                //val res = responseBody[0].name
                 Log.d("AktualneFragment", "Lokacia: ")
-                //Toast.makeText(this@NewPoleActivity, "Lokacia: $myString", Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<HourlyForecast4>, t: Throwable) {
-                Log.d("AktualneFragment", "cele zle ")
+                Log.d("AktualneFragment", "Error: ${t.message}")
             }
         })
-
-
     }
 
 

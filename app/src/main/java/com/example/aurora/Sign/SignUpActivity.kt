@@ -32,12 +32,11 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener{
-            val username = binding.usernameEt.text.toString()
             val email = binding.emailEt.text.toString()
             val pass = binding.passET.text.toString()
             val  confirmPass = binding.confirmPassEt.text.toString()
 
-            if (username.isNotEmpty() && email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()){
+            if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()){
                 if (pass == confirmPass){
                     firebaseAuth.createUserWithEmailAndPassword(email , pass).addOnCompleteListener {
                         if(it.isSuccessful){

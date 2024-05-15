@@ -51,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Zadali ste nesprávny email alebo heslo", Toast.LENGTH_SHORT).show()
 
                     }
                 }

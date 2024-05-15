@@ -101,25 +101,24 @@ class NewPoleActivity : AppCompatActivity() {
         getCurrentDateFirebase().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val date = task.result
-                val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
+                val userDailyLimitRef = FirebaseDatabase.getInstance()
+                    .getReference("UserDailyLimits").child(userid).child(date)
 
                 userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val count = dataSnapshot.getValue(Int::class.java) ?: 0
                         if (count >= MAX_FIELDS_PER_DAY) {
-                            Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext,
+                                "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
                         } else {
                             userDailyLimitRef.setValue(count + 1)
                             saveFieldToDatabase(empID, pole)
                         }
                     }
-
                     override fun onCancelled(databaseError: DatabaseError) {
-                        // Handle possible errors.
+                        Log.d("NewPoleActivity", "onCancelled: ${databaseError.message}")
                     }
                 })
-            } else {
-                // Handle possible errors.
             }
         }
     }

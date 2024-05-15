@@ -117,12 +117,13 @@ class MainActivity : AppCompatActivity() {
 
         // Retrieve skodecCount from SharedPreferences
         skodecCount = sharedPreferences.getInt("skodecCount", 0)
+        val c = 0
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val newCount = dataSnapshot.childrenCount.toInt()
-                    if (newCount > skodecCount) {
+                    if (newCount > c) {
                         // A new skodec has been added
                         skodecCount = newCount
 
@@ -151,7 +152,8 @@ class MainActivity : AppCompatActivity() {
                                     // Calculate the distance between the new skodec and the field
                                     if (locationA.distanceTo(locationB).toDouble() < 50000) {
                                         // The new skodec is within 50km of the field, create a notification
-                                        createNotificationSkodec("Bol pridaný nový skodec vo vzdialenosti 50 km od vašich polí.", newSkodec?.nazovSkodca.toString())
+                                        createNotificationSkodec("Bol pridaný nový skodec vo vzdialenosti 50 km od vašich polí.",
+                                            newSkodec?.nazovSkodca.toString())
                                         break
                                     }
                                 }
@@ -210,7 +212,7 @@ class MainActivity : AppCompatActivity() {
         })*/
 
         //_____________NOTIFIKACIE NA POCASIE_____________
-        // Vytvorenie Handler
+        // Vytvorenie Handlera
         val handler = Handler(Looper.getMainLooper())
 
         // Vytvorenie Runnable
@@ -305,7 +307,8 @@ class MainActivity : AppCompatActivity() {
         val notificationChannelId = "skodec_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(notificationChannelId, "Skodec Notifications", NotificationManager.IMPORTANCE_HIGH)
+            val notificationChannel = NotificationChannel(notificationChannelId,
+                "Skodec Notifications", NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(notificationChannel)
         }
 

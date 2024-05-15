@@ -118,7 +118,7 @@ class OkoliteSkodceFragment : Fragment() {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                // Handle the error
+                Log.d("SkodceFragment", "onCancelled: ${error.message}")
             }
 
         })
