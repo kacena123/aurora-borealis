@@ -22,22 +22,6 @@
         android:hint="Plodina" />
 
     <EditText
-        android:id="@+id/etSirka"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Zemepisna sirkka"
-        android:inputType="textPersonName" />
-    <EditText
-        android:id="@+id/etDlzka"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Zemepisna dlzka"
-        android:inputType="textPersonName" />
-    <EditText
         android:id="@+id/etRozloha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

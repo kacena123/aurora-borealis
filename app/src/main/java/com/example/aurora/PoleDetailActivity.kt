@@ -97,15 +97,11 @@ class PoleDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val etNazovPola = mDialogView.findViewById<EditText>(R.id.etNazovPola)
         val etPlodina = mDialogView.findViewById<EditText>(R.id.etPlodina)
-        val etSirka = mDialogView.findViewById<EditText>(R.id.etSirka)
-        val etDlzka = mDialogView.findViewById<EditText>(R.id.etDlzka)
         val etRozloha = mDialogView.findViewById<EditText>(R.id.etRozloha)
         val button = mDialogView.findViewById<Button>(R.id.btnUpdateData)
 
         etNazovPola.setText(intent.getStringExtra("nazovPola"))
         etPlodina.setText(intent.getStringExtra("plodina"))
-        etSirka.setText(intent.getStringExtra("sirka"))
-        etDlzka.setText(intent.getStringExtra("dlzka"))
         etRozloha.setText(intent.getStringExtra("rozloha"))
 
         mDialog.setTitle("Aktualizacia informacii pola: $nazovPola")
@@ -117,15 +113,13 @@ class PoleDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 id,
                 etNazovPola.text.toString(),
                 etPlodina.text.toString(),
-                etSirka.text.toString(),
-                etDlzka.text.toString(),
+                intent.getStringExtra("sirka").toString(),
+                intent.getStringExtra("dlzka").toString(),
                 etRozloha.text.toString()
             )
             Toast.makeText(applicationContext, "Data boli aktualizovane", Toast.LENGTH_LONG).show()
             binding.nazovPola.text = etNazovPola.text.toString()
             binding.plodina.text = etPlodina.text.toString()
-            binding.dlzka.text = etDlzka.text.toString()
-            binding.sirka.text = etSirka.text.toString()
             binding.rozloha.text = etRozloha.text.toString() + " ha"
 
             alertDialog.dismiss()
