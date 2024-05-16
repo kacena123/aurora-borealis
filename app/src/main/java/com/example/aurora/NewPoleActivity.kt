@@ -53,8 +53,8 @@ class NewPoleActivity : AppCompatActivity() {
     private fun saveData(){
         val nazovPola = binding.nazovPolaEt.text.toString()
         val plodina = binding.plodinaET.text.toString()
-        val sirka = binding.zemepisnaDlzkaET.text.toString()
-        val dlzka = binding.zemepisnaSirkaET.text.toString()
+        var sirka = binding.zemepisnaDlzkaET.text.toString()
+        var dlzka = binding.zemepisnaSirkaET.text.toString()
         val rozloha = binding.rozlohaET.text.toString()
 
         if (nazovPola.isEmpty()){
@@ -72,31 +72,19 @@ class NewPoleActivity : AppCompatActivity() {
         if (rozloha.isEmpty()){
             binding.rozlohaET.error = "Zadajte rozlohu pola"
         }
+
+        // Kontrola a nahradenie čiarky desatinnou bodkou
+        if (sirka.contains(",")) {
+            sirka = sirka.replace(",", ".")
+        }
+        if (dlzka.contains(",")) {
+            dlzka = dlzka.replace(",", ".")
+        }
+
         val userid = firebaseAuth.currentUser?.uid.toString()
         val empID = dbRef.push().key!!
         val pole = PoleModel(empID, userid, nazovPola, plodina, dlzka, sirka, rozloha)
 
-        /*
-        val date = getCurrentDate()
-        val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
-
-        userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val count = dataSnapshot.getValue(Int::class.java) ?: 0
-                if (count >= MAX_FIELDS_PER_DAY) {
-                    Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
-                } else {
-                    userDailyLimitRef.setValue(count + 1)
-                    saveFieldToDatabase(empID, pole)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Handle possible errors.
-            }
-        })
-
-         */
 
         getCurrentDateFirebase().addOnCompleteListener { task ->
             if (task.isSuccessful) {

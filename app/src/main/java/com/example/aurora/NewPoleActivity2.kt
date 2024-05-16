@@ -154,29 +154,13 @@ class NewPoleActivity2 : AppCompatActivity() {
         }
         val userid = firebaseAuth.currentUser?.uid.toString()
         val empID = dbRef.push().key!!
+
+        if (lat.isEmpty() || log.isEmpty()) {
+            Toast.makeText(this, "Nepodarilo sa získať polohu pola", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val pole = PoleModel(empID, userid, nazovPola, plodina, lat, log, rozloha)
-
-        /*
-        val date = getCurrentDate()
-        val userDailyLimitRef = FirebaseDatabase.getInstance().getReference("UserDailyLimits").child(userid).child(date)
-
-        userDailyLimitRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val count = dataSnapshot.getValue(Int::class.java) ?: 0
-                if (count >= MAX_FIELDS_PER_DAY) {
-                    Toast.makeText(applicationContext, "Dosiahli ste maximálny počet polí za deň", Toast.LENGTH_LONG).show()
-                } else {
-                    userDailyLimitRef.setValue(count + 1)
-                    saveFieldToDatabase(empID, pole)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Handle possible errors.
-            }
-        })
-
-         */
 
         getCurrentDateFirebase().addOnCompleteListener { task ->
             if (task.isSuccessful) {
